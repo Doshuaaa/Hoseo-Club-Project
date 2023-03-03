@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00BCD4"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="80dp"
+            android:src="@drawable/hoseo"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="36dp"
+            android:text="호서 동아리"
+            android:layout_gravity="center"
+            android:textColor="#ffffff"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#ffffff">
+
+            <EditText
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:hint="아이디"
+                android:layout_marginTop="18dp"
+                android:layout_gravity="center"
+                android:drawableLeft="@drawable/ic_baseline_person_24"
+                android:id="@+id/idText"/>
+
+            <EditText
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:hint="비밀번호"
+                android:layout_gravity="center"
+                android:layout_marginTop="6dp"
+                android:drawableLeft="@drawable/ic_baseline_lock_24"
+                android:id="@+id/pwText"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:text="로그인"
+                android:background="#FF9800"
+                android:textColor="#ffffff"
+                android:id="@+id/loginButton"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/join"
+                android:layout_marginTop="12dp"
+                android:id="@+id/registerText"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

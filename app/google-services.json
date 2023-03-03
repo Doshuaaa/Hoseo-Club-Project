@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "149740519057",
+    "project_id": "hoseoclubdb",
+    "storage_bucket": "hoseoclubdb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:149740519057:android:77837e41a93c26c008c930",
+        "android_client_info": {
+          "package_name": "com.example.hoseoclub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "149740519057-ovcvhm50j8aelsr209vm3k286abumal7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJx1IZgst78jTpn4PJ_L4K2_VZvXgwEog"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "149740519057-ovcvhm50j8aelsr209vm3k286abumal7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

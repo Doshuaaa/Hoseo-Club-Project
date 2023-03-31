@@ -1,13 +1,31 @@
 package com.example.hoseoclub;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -15,11 +33,87 @@ public class LoginActivity extends AppCompatActivity {
     private EditText pwText;
     private Button loginButton;
     private TextView registerText;
+    private Spinner universitySpinner;
+    private ImageView universityImageView;
+    private LinearLayout universityLinearLayout;
+    private FirebaseDatabase database;
+    private DatabaseReference databaseReference;
+    private ArrayList<String> universityNameList;
+    private ArrayAdapter<String> arrayAdapter;
+    private ProgressDialog customProgressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        universitySpinner = findViewById(R.id.schoolSpinner);
+        universityImageView = findViewById(R.id.loginUniversityImageView);
+        universityLinearLayout = findViewById(R.id.loginLinearLayout);
+
+        //로딩 다이얼로그 설정
+        customProgressDialog = new ProgressDialog(this);
+        customProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        customProgressDialog.setCancelable(false);
+
+        //
+        ArrayList<UniversityList> universityList = new ArrayList<>();
+
+        universityNameList = new ArrayList<>();
+
+        universityNameList.add("학교를 선택해주세요.");
+
+        database = FirebaseDatabase.getInstance();
+        databaseReference = database.getReference("University");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot datasnapshot : snapshot.getChildren()) {
+                    University university = datasnapshot.getValue(University.class);
+                    universityNameList.add(university.getName());
+//                    universityImageList.add(university.getImage());
+//                    universityBackgroundList.add(university.getColor());
+                    universityList.add(new UniversityList(university.getName(), university.getImage(), university.getColor()));
+                }
+                arrayAdapter = new ArrayAdapter<>(LoginActivity.this, android.R.layout.simple_spinner_item, universityNameList);
+
+                arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                universitySpinner.setAdapter(arrayAdapter);
+
+
+                universitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        customProgressDialog.show();
+                        int realPosition = position - 1;
+                        if(realPosition == -1) {
+                            universityImageView.setImageResource(R.drawable.sample);
+                            universityLinearLayout.setBackgroundColor(Color.parseColor("#BFBABA"));
+                            customProgressDialog.dismiss();
+                            return;
+                        }
+//                        Glide.with(LoginActivity.this).load(universityImageList.get(realPosition))
+//                                        .into(universityImageView);
+//                        universityLinearLayout.setBackgroundColor(Color.parseColor(universityBackgroundList.get(realPosition)));
+
+                        Glide.with(LoginActivity.this).load(universityList.get(realPosition).getImage())
+                                .into(universityImageView);
+                        universityLinearLayout.setBackgroundColor(Color.parseColor(universityList.get(realPosition).getColor()));
+                        customProgressDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        Toast.makeText(LoginActivity.this, "nothing", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         registerText = findViewById(R.id.registerText);
 

@@ -7,22 +7,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#00BCD4"
-        android:orientation="vertical">
+        android:background="#BFBABA"
+        android:orientation="vertical"
+        android:id="@+id/loginLinearLayout">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="210dp"
+            android:layout_height="210dp"
             android:layout_gravity="center"
             android:layout_marginTop="80dp"
-            android:src="@drawable/hoseo"/>
+            android:src="@drawable/sample"
+            android:id="@+id/loginUniversityImageView"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textSize="36dp"
-            android:text="호서 동아리"
+            android:text="너동 나동"
             android:layout_gravity="center"
             android:textColor="#ffffff"/>
 
@@ -32,12 +34,22 @@
             android:orientation="vertical"
             android:background="#ffffff">
 
+
+            <Spinner
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:layout_marginTop="18dp"
+                android:layout_gravity="center"
+                android:id="@+id/schoolSpinner"
+                android:textColor="#475afd" />
+
             <EditText
                 android:layout_width="240dp"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:hint="아이디"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="6dp"
                 android:layout_gravity="center"
                 android:drawableLeft="@drawable/ic_baseline_person_24"
                 android:id="@+id/idText"/>

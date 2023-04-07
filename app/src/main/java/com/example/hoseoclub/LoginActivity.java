@@ -1,5 +1,6 @@
 package com.example.hoseoclub;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -41,6 +42,8 @@ public class LoginActivity extends AppCompatActivity {
     private ArrayList<String> universityNameList;
     private ArrayAdapter<String> arrayAdapter;
     private ProgressDialog customProgressDialog;
+    public static Context contextLogin;
+    public String universityName = null;
 
 
     @Override
@@ -48,9 +51,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        contextLogin = this;
+
         universitySpinner = findViewById(R.id.schoolSpinner);
         universityImageView = findViewById(R.id.loginUniversityImageView);
         universityLinearLayout = findViewById(R.id.loginLinearLayout);
+        loginButton = findViewById(R.id.loginButton);
 
         //로딩 다이얼로그 설정
         customProgressDialog = new ProgressDialog(this);
@@ -121,6 +127,21 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                universityName = universitySpinner.getSelectedItem().toString();
+
+                if(universityName.equals("학교를 선택해주세요.")) {
+                    Toast.makeText(LoginActivity.this, "학교를 선택해주세요", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });

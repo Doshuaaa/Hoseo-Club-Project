@@ -4,11 +4,22 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +30,11 @@ public class ListFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
+    private FirebaseDatabase database;
+    private DatabaseReference databaseReference;
+    private String universityName = null;
+    private ArrayList<String> clubNameList;
+    private int lastPosition = 0;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -65,25 +81,67 @@ public class ListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View inflate = inflater.inflate(R.layout.fragment_list, container, false);
+
+        universityName = ((LoginActivity)LoginActivity.contextLogin).universityName;
+
+        clubNameList = new ArrayList<>();
+
+        database = FirebaseDatabase.getInstance();
+        databaseReference = database.getReference();
+        databaseReference.child("Club").child(universityName).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    clubNameList.add(dataSnapshot.getKey());
+                }
+
+                adapter = new RecyclerView.Adapter() {
+                    @NonNull
+                    @Override
+                    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                        View view = View.inflate(ListFragment.this.getContext(), R.layout.viewholder_club_checkbox, null);
+                        RecyclerView.ViewHolder viewHolder = new ClubCheckBoxViewHolder(view);
+                        return viewHolder;
+                    }
+
+                    @Override
+                    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
+                        ClubCheckBoxViewHolder viewHolder = (ClubCheckBoxViewHolder) holder;
+                        viewHolder.setCheckBoxText(clubNameList.get(position));
+                        viewHolder.clubCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                            }
+                        });
+                        lastPosition = holder.getAdapterPosition();
+                    }
+
+                    @Override
+                    public int getItemCount() {
+                        return clubNameList.size();
+                    }
+                };
+
+                //recyclerView.setLayoutManager(new LinearLayoutManager(ListFragment.this.getContext(), LinearLayoutManager.HORIZONTAL, false));
+                recyclerView.setLayoutManager(new GridLayoutManager(ListFragment.this.getContext(), 3));
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        // databaseReference.child("Club").child(universityName)
+
         recyclerView = inflate.findViewById(R.id.clubListRecyclerView);
 
-        adapter = new RecyclerView.Adapter() {
-            @NonNull
-            @Override
-            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                return null;
-            }
 
-            @Override
-            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-            }
 
-            @Override
-            public int getItemCount() {
-                return 0;
-            }
-        };
 
         return inflate;
     }

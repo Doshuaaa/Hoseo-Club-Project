@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -28,12 +27,17 @@ import java.util.ArrayList;
  */
 public class ListFragment extends Fragment {
 
-    private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private RecyclerView clubListRecyclerView;
+    private RecyclerView clubInformRecyclerView;
+    private RecyclerView.Adapter listAdapter;
+    private RecyclerView.Adapter informAdapter;
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
     private String universityName = null;
     private ArrayList<String> clubNameList;
+    private ArrayList<ClubInformationList> clubInformationLists;
+
+    private ArrayList<ClubCheckBoxViewHolder> clubCheckBoxList;
     private int lastPosition = 0;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -82,9 +86,14 @@ public class ListFragment extends Fragment {
         // Inflate the layout for this fragment
         View inflate = inflater.inflate(R.layout.fragment_list, container, false);
 
+        clubListRecyclerView = inflate.findViewById(R.id.clubListRecyclerView);
+        clubInformRecyclerView = inflate.findViewById(R.id.clubInformationRecyclerView);
+
         universityName = ((LoginActivity)LoginActivity.contextLogin).universityName;
 
         clubNameList = new ArrayList<>();
+        clubCheckBoxList = new ArrayList<>();
+        clubInformationLists = new ArrayList<>();
 
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference();
@@ -95,7 +104,7 @@ public class ListFragment extends Fragment {
                     clubNameList.add(dataSnapshot.getKey());
                 }
 
-                adapter = new RecyclerView.Adapter() {
+                listAdapter = new RecyclerView.Adapter() {
                     @NonNull
                     @Override
                     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -108,14 +117,49 @@ public class ListFragment extends Fragment {
                     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
                         ClubCheckBoxViewHolder viewHolder = (ClubCheckBoxViewHolder) holder;
+                        clubCheckBoxList.add(viewHolder);
+
+
                         viewHolder.setCheckBoxText(clubNameList.get(position));
                         viewHolder.clubCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override
                             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
+                                if(lastPosition == holder.getAdapterPosition())
+                                    return;
+                                clubCheckBoxList.get(lastPosition).clubCheckBox.setChecked(false);
+                                lastPosition = holder.getAdapterPosition();
+
+                                if(buttonView.isChecked()) {
+
+                                    databaseReference.child("Club")
+                                            .child(universityName)
+                                            .child(buttonView.getText().toString()).addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    clubInformationLists.clear();
+                                                    String text = null;
+                                                    String image = null;
+                                                    for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                                        text = dataSnapshot.child("text").getValue(String.class);
+                                                        image = dataSnapshot.child("image").getValue(String.class);
+                                                     clubInformationLists.add(new ClubInformationList(text, image));
+                                                    }
+                                                    informAdapter.notifyDataSetChanged();
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+
+                                }
+
                             }
+
                         });
-                        lastPosition = holder.getAdapterPosition();
+
                     }
 
                     @Override
@@ -125,8 +169,8 @@ public class ListFragment extends Fragment {
                 };
 
                 //recyclerView.setLayoutManager(new LinearLayoutManager(ListFragment.this.getContext(), LinearLayoutManager.HORIZONTAL, false));
-                recyclerView.setLayoutManager(new GridLayoutManager(ListFragment.this.getContext(), 3));
-                recyclerView.setAdapter(adapter);
+                clubListRecyclerView.setLayoutManager(new GridLayoutManager(ListFragment.this.getContext(), 3));
+                clubListRecyclerView.setAdapter(listAdapter);
             }
 
             @Override
@@ -135,13 +179,32 @@ public class ListFragment extends Fragment {
             }
         });
 
+        informAdapter = new RecyclerView.Adapter() {
+            @NonNull
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = View.inflate(ListFragment.this.getContext(), R.layout.club_result_viewholder, null);
+                RecyclerView.ViewHolder viewHolder1 = new ClubResultViewHolder(view);
+                return viewHolder1;
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+                ClubResultViewHolder viewHolder1 = (ClubResultViewHolder) holder;
+                viewHolder1.setClubInformation(ListFragment.this.getContext(),
+                        clubInformationLists.get(position).getClubName(),
+                        clubInformationLists.get(position).getClubImage());
+            }
+
+            @Override
+            public int getItemCount() {
+                return clubInformationLists.size();
+            }
+        };
+        clubInformRecyclerView.setLayoutManager(new GridLayoutManager(ListFragment.this.getContext(), 3));
+        clubInformRecyclerView.setAdapter(informAdapter);
+
         // databaseReference.child("Club").child(universityName)
-
-        recyclerView = inflate.findViewById(R.id.clubListRecyclerView);
-
-
-
-
 
         return inflate;
     }

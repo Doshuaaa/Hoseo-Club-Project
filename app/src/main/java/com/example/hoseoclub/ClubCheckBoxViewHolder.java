@@ -16,6 +16,7 @@ public class ClubCheckBoxViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
 
         clubCheckBox = itemView.findViewById(R.id.clubCheckBox);
+
     }
 
     public void setCheckBoxText(String text) {

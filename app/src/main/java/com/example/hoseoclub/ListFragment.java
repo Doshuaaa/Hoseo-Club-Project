@@ -1,5 +1,7 @@
 package com.example.hoseoclub;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -39,6 +41,9 @@ public class ListFragment extends Fragment {
 
     private ArrayList<ClubCheckBoxViewHolder> clubCheckBoxList;
     private int lastPosition = 0;
+
+    public static String selectedClubName = "하이";
+    //public static Context contextListFragment;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -153,9 +158,7 @@ public class ListFragment extends Fragment {
 
                                                 }
                                             });
-
                                 }
-
                             }
 
                         });
@@ -194,6 +197,14 @@ public class ListFragment extends Fragment {
                 viewHolder1.setClubInformation(ListFragment.this.getContext(),
                         clubInformationLists.get(position).getClubName(),
                         clubInformationLists.get(position).getClubImage());
+                ((ClubResultViewHolder) holder).clubLinearLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        selectedClubName = clubNameList.get(viewHolder1.getLayoutPosition());
+                        Intent intent = new Intent(ListFragment.this.getContext(), IntroduceClubActivity.class);
+                        startActivity(intent);
+                    }
+                });
             }
 
             @Override

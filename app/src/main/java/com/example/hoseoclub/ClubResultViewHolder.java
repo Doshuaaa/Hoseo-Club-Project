@@ -10,13 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class ClubResultViewHolder extends RecyclerView.ViewHolder {
 
     public ImageView clubImage;
-    public TextView clubNameText;
+    public TextView clubIntroText;
 
     public LinearLayout clubLinearLayout;
 
@@ -24,14 +22,14 @@ public class ClubResultViewHolder extends RecyclerView.ViewHolder {
     public ClubResultViewHolder(@NonNull View itemView) {
         super(itemView);
         clubImage = itemView.findViewById(R.id.clubImage);
-        clubNameText = itemView.findViewById(R.id.clubNameText);
+        clubIntroText = itemView.findViewById(R.id.clubNameText);
         clubLinearLayout = itemView.findViewById(R.id.clubLinearLayout);
 
 
     }
 
     public void setClubInformation(Context context, String text, String image) {
-        clubNameText.setText(text);
+        clubIntroText.setText(text);
         Glide.with(context).load(image).into(clubImage);
     }
 }

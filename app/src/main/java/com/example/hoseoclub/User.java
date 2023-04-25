@@ -1,32 +1,34 @@
 package com.example.hoseoclub;
 
 public class User {
-    public String userName;
-    public String email;
+    private String userName;
+    private String userEmail;
+    private String userPassword;
+    private String userIdToken;
 
-    public User() {
 
+    public User(String userIdToken, String userName, String userPassword, String email) {
+        this.userIdToken = userIdToken;
+        this.userName = userName;
+        this.userPassword = userPassword;
+        this.userEmail = email;
     }
 
-    public User(String userName, String email) {
-        this.userName = userName;
-        this.email = email;
+    public String getUserIdToken() {
+        return userIdToken;
     }
 
     public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public String getEmail() {
-        return email;
-    }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getUserPassword() {
+        return userPassword;
     }
 
 }

@@ -11,12 +11,13 @@
         android:layout_gravity="center">
 
         <EditText
+            android:id="@+id/studentEmailText"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:hint="학번을 입력해주세요."
+            android:hint="학교 이메일을 입력해주세요."
             android:singleLine="true"
-            android:id="@+id/studentNumText" />
+            android:textSize="14dp" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="wrap_content"
@@ -26,23 +27,32 @@
             android:id="@+id/numDupCheckBtn"/>
     </LinearLayout>
 
+    <TextView
+        android:layout_width="270dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center"
+        android:textSize="16dp"
+        android:layout_marginTop="8dp"
+        android:id="@+id/correctEmailText"/>
     <EditText
+        android:id="@+id/pwText"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:hint="비밀번호를 입력해주세요."
         android:singleLine="true"
-        android:id="@+id/pwText" />
+        android:textSize="14dp" />
 
     <EditText
+        android:id="@+id/pwConfirmText"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:hint="비밀번호를 한 번 더 입력해주세요."
         android:singleLine="true"
-        android:id="@+id/pwConfirmText" />
+        android:textSize="14dp" />
 
     <TextView
         android:layout_width="270dp"
@@ -53,13 +63,14 @@
         android:id="@+id/correctPwText"/>
 
     <EditText
+        android:id="@+id/nameText"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:hint="이름을 입력해주세요."
         android:singleLine="true"
-        android:id="@+id/nameText" />
+        android:textSize="14dp" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="270dp"

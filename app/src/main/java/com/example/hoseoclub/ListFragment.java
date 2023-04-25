@@ -1,6 +1,5 @@
 package com.example.hoseoclub;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -37,12 +36,15 @@ public class ListFragment extends Fragment {
     private DatabaseReference databaseReference;
     private String universityName = null;
     private ArrayList<String> clubNameList;
+    private ArrayList<String> clubTypeList;
     private ArrayList<ClubInformationList> clubInformationLists;
 
     private ArrayList<ClubCheckBoxViewHolder> clubCheckBoxList;
     private int lastPosition = 0;
 
-    public static String selectedClubName = "하이";
+    public static String selectedClubName = "null";
+    public static String selectedClubImage = "null";
+    public static String selectedClubText = "null";
     //public static Context contextListFragment;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -97,6 +99,7 @@ public class ListFragment extends Fragment {
         universityName = ((LoginActivity)LoginActivity.contextLogin).universityName;
 
         clubNameList = new ArrayList<>();
+        clubTypeList = new ArrayList<>();
         clubCheckBoxList = new ArrayList<>();
         clubInformationLists = new ArrayList<>();
 
@@ -106,7 +109,7 @@ public class ListFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    clubNameList.add(dataSnapshot.getKey());
+                    clubTypeList.add(dataSnapshot.getKey());
                 }
 
                 listAdapter = new RecyclerView.Adapter() {
@@ -125,7 +128,7 @@ public class ListFragment extends Fragment {
                         clubCheckBoxList.add(viewHolder);
 
 
-                        viewHolder.setCheckBoxText(clubNameList.get(position));
+                        viewHolder.setCheckBoxText(clubTypeList.get(position));
                         viewHolder.clubCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override
                             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -143,12 +146,16 @@ public class ListFragment extends Fragment {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                     clubInformationLists.clear();
+                                                    clubNameList.clear();
+                                                    String name = null;
                                                     String text = null;
                                                     String image = null;
                                                     for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                                        name = dataSnapshot.getKey();
                                                         text = dataSnapshot.child("text").getValue(String.class);
                                                         image = dataSnapshot.child("image").getValue(String.class);
-                                                     clubInformationLists.add(new ClubInformationList(text, image));
+                                                        clubNameList.add(name);
+                                                     clubInformationLists.add(new ClubInformationList(name, image, text));
                                                     }
                                                     informAdapter.notifyDataSetChanged();
                                                 }
@@ -167,7 +174,7 @@ public class ListFragment extends Fragment {
 
                     @Override
                     public int getItemCount() {
-                        return clubNameList.size();
+                        return clubTypeList.size();
                     }
                 };
 
@@ -200,7 +207,9 @@ public class ListFragment extends Fragment {
                 ((ClubResultViewHolder) holder).clubLinearLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        selectedClubName = clubNameList.get(viewHolder1.getLayoutPosition());
+                        selectedClubName = clubInformationLists.get(viewHolder1.getLayoutPosition()).getClubName();
+                        selectedClubImage = clubInformationLists.get(viewHolder1.getLayoutPosition()).getClubImage();
+                        selectedClubText = clubInformationLists.get(viewHolder1.getLayoutPosition()).getClubIntro();
                         Intent intent = new Intent(ListFragment.this.getContext(), IntroduceClubActivity.class);
                         startActivity(intent);
                     }

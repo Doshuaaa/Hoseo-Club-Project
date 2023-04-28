@@ -12,19 +12,13 @@
 
         <EditText
             android:id="@+id/studentEmailText"
-            android:layout_width="180dp"
+            android:layout_width="270dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:hint="학교 이메일을 입력해주세요."
             android:singleLine="true"
             android:textSize="14dp" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="중복 확인"
-            android:background="#FF9800"
-            android:id="@+id/numDupCheckBtn"/>
     </LinearLayout>
 
     <TextView
@@ -71,6 +65,14 @@
         android:hint="이름을 입력해주세요."
         android:singleLine="true"
         android:textSize="14dp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="이메일 인증하기"
+        android:background="#FF9800"
+        android:id="@+id/numDupCheckBtn"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="270dp"

@@ -66,6 +66,8 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View view) {
                 studentEmail = studentEmailText.getText().toString();
                 position = studentEmail.indexOf("@");
+                pw = pwText.getText().toString();
+                name = nameText.getText().toString();
 
                 if(studentEmail.equals("")) {
                     builder.setMessage("이메일을 입력해 주세요");
@@ -79,36 +81,60 @@ public class RegisterActivity extends AppCompatActivity {
                     correctEmailText.setText("올바른 이메일을 입력해 주세요.");
                     return;
                 }
-                else {
-
-
-                    builder.setMessage("사용할 수 있는 학번 입니다.");
-                    builder.setPositiveButton("확인", null);
-                    builder.show();
-                    usableEmail = true;
+                if(pw.length() > 6) {
+                    correctPwText.setText("6자리 이상의 비밀번호를 설정해주세요.");
+                    return;
                 }
+                else if(!pw.equals(pwConfirmText.getText().toString())) {
+                    correctEmailText.setText("비밀번호가 일치하지 않습니다.");
+                    return;
+                }
+
+                mFirebaseAuth.createUserWithEmailAndPassword(studentEmail, pw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+
+                        if(firebaseUser == null) {
+                            return;
+                        }
+                        firebaseUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()) {
+                                    Toast.makeText(RegisterActivity.this, "이메일 인증을 보냈습니다.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(RegisterActivity.this, "인증 이메일 발송에 실패했습니다", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                });
+
+            }
 
 
 /*                String tempNum = num.toString();
-                if(tempNum.equals("")) {
-                    builder.setMessage("사용할 수 있는 학번 입니다.");
-                    builder.setPositiveButton("확인", null);
-                    builder.show();
-                    usableId = true;
-                } else {
-                    builder.setMessage("다른 사람이 사용하고 있는 학번 입니다.");
-                    builder.setPositiveButton("확인", null);
-                    builder.show();
-                }*/
-            }
+            if(tempNum.equals("")) {
+                builder.setMessage("사용할 수 있는 학번 입니다.");
+                builder.setPositiveButton("확인", null);
+                builder.show();
+                usableId = true;
+            } else {
+                builder.setMessage("다른 사람이 사용하고 있는 학번 입니다.");
+                builder.setPositiveButton("확인", null);
+                builder.show();
+            }*/
+
         });
+
+
+
 
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                pw = pwText.getText().toString();
-                name = nameText.getText().toString();
 
                 mFirebaseAuth.createUserWithEmailAndPassword(studentEmail, pw).addOnCompleteListener(RegisterActivity.this
                         , new OnCompleteListener<AuthResult>() {
@@ -118,9 +144,11 @@ public class RegisterActivity extends AppCompatActivity {
                                     FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                                     User user = new User(firebaseUser.getUid(),firebaseUser.getEmail(), pw, name);
                                     mDatabaseRef.child("User").child(firebaseUser.getUid()).setValue(user);
-                                    Toast.makeText(RegisterActivity.this, "회원가입이 완료되었습니다.", Toast.LENGTH_SHORT);
+
+
+                                    Toast.makeText(RegisterActivity.this, "회원가입이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(RegisterActivity.this, "회원가입에 실패했습니다.", Toast.LENGTH_SHORT);
+                                    Toast.makeText(RegisterActivity.this, "회원가입에 실패했습니다.", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -128,20 +156,4 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void writeNewUser(String userId, String pw, String name, String email) {
-        User user = new User(name, email);
-
-        mDatabaseRef.child("users").child(userId).setValue(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Toast.makeText(RegisterActivity.this, "회원가입 되었습니다.", Toast.LENGTH_SHORT);
-                    }
-                }).addOnCanceledListener(new OnCanceledListener() {
-            @Override
-            public void onCanceled() {
-                Toast.makeText(RegisterActivity.this, "회원가입에 실패했습니다\n입력 정보를 다시 확인해주세요", Toast.LENGTH_SHORT);
-            }
-        });
-    }
 }

@@ -79,7 +79,6 @@
         android:layout_height="wrap_content"
         android:text="가입하기"
         android:layout_gravity="center"
-        android:enabled="false"
         android:id="@+id/registerBtn"/>
 
 </LinearLayout>

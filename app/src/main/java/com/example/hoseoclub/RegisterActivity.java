@@ -19,8 +19,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -34,6 +37,9 @@ public class RegisterActivity extends AppCompatActivity {
     int position = -1;
     AlertDialog.Builder builder;
     Boolean usableEmail = false;
+    private FirebaseUser firebaseUser;
+    private String[] hoseoEmail;
+    String temp = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +74,7 @@ public class RegisterActivity extends AppCompatActivity {
                 position = studentEmail.indexOf("@");
                 pw = pwText.getText().toString();
                 name = nameText.getText().toString();
+                hoseoEmail = studentEmail.split("@");
 
                 if(studentEmail.equals("")) {
                     builder.setMessage("이메일을 입력해 주세요");
@@ -81,7 +88,13 @@ public class RegisterActivity extends AppCompatActivity {
                     correctEmailText.setText("올바른 이메일을 입력해 주세요.");
                     return;
                 }
-                if(pw.length() > 6) {
+
+                else if(!hoseoEmail[1].equals("vision.hoseo.edu")) {
+                    correctEmailText.setText("올바른 학교 이메일형식이 아닙니다.");
+                    return;
+                }
+
+                if(pw.length() < 6) {
                     correctPwText.setText("6자리 이상의 비밀번호를 설정해주세요.");
                     return;
                 }
@@ -90,26 +103,50 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
                 }
 
-                mFirebaseAuth.createUserWithEmailAndPassword(studentEmail, pw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                mDatabaseRef.child(hoseoEmail[0]).addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        temp = snapshot.child("userEmail").getValue(String.class);
 
-                        if(firebaseUser == null) {
+                        if(temp != null) {
+                            builder.setMessage("이미 존재하는 이메일 입니다.")
+                                    .setPositiveButton("확인", null)
+                                    .show();
                             return;
                         }
-                        firebaseUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                        mFirebaseAuth.createUserWithEmailAndPassword(studentEmail, pw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()) {
-                                    Toast.makeText(RegisterActivity.this, "이메일 인증을 보냈습니다.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(RegisterActivity.this, "인증 이메일 발송에 실패했습니다", Toast.LENGTH_SHORT).show();
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                firebaseUser = mFirebaseAuth.getCurrentUser();
+
+                                if(firebaseUser == null) {
+                                    return;
                                 }
+
+                                firebaseUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()) {
+                                            Toast.makeText(RegisterActivity.this, "이메일 인증을 보냈습니다.", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(RegisterActivity.this, "이메일 인증 발송에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
                             }
                         });
                     }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
                 });
+
+
+
+
 
             }
 
@@ -134,24 +171,32 @@ public class RegisterActivity extends AppCompatActivity {
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                firebaseUser.reload();
+                boolean a = firebaseUser.isEmailVerified();
+                if(firebaseUser == null) {
+                    builder.setMessage("회원가입에 실패했습니다");
+                    builder.setPositiveButton("확인", null);
+                    builder.show();
+                    return;
+                }
+                else if(!firebaseUser.isEmailVerified()) {
+                    builder.setMessage("이메일 인증을 해주세요.");
+                    builder.setPositiveButton("확인", null);
+                    builder.show();
+                    return;
+                } else {
+                    mDatabaseRef.child(hoseoEmail[0]).setValue(new User(firebaseUser.getUid(), name, pw, studentEmail));
+//                    builder.setMessage();
+//                    builder.setPositiveButton("확인", null);
+//                    builder.show();
+                    AlertDialog alertDialog = new AlertDialog.Builder(RegisterActivity.this)
+                            .setMessage("회원가입에 완료했습니다.")
+                            .setPositiveButton("확인", null)
+                            .show();
+                    alertDialog.dismiss();
+                    finish();
+                }
 
-
-                mFirebaseAuth.createUserWithEmailAndPassword(studentEmail, pw).addOnCompleteListener(RegisterActivity.this
-                        , new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if(task.isSuccessful()) {
-                                    FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                                    User user = new User(firebaseUser.getUid(),firebaseUser.getEmail(), pw, name);
-                                    mDatabaseRef.child("User").child(firebaseUser.getUid()).setValue(user);
-
-
-                                    Toast.makeText(RegisterActivity.this, "회원가입이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(RegisterActivity.this, "회원가입에 실패했습니다.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
             }
         });
     }

@@ -53,6 +53,8 @@ public class LoginActivity extends AppCompatActivity {
 
         contextLogin = this;
 
+        idText = findViewById(R.id.idText);
+        pwText = findViewById(R.id.pwText);
         universitySpinner = findViewById(R.id.schoolSpinner);
         universityImageView = findViewById(R.id.loginUniversityImageView);
         universityLinearLayout = findViewById(R.id.loginLinearLayout);
@@ -137,10 +139,26 @@ public class LoginActivity extends AppCompatActivity {
 
                 universityName = universitySpinner.getSelectedItem().toString();
 
+
                 if(universityName.equals("학교를 선택해주세요.")) {
                     Toast.makeText(LoginActivity.this, "학교를 선택해주세요", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                String id = idText.getText().toString();
+                databaseReference = database.getReference("User").child(id);
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
             }

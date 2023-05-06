@@ -1,5 +1,6 @@
 package com.example.hoseoclub;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -40,6 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseUser firebaseUser;
     private String[] hoseoEmail;
     String temp = null;
+    private boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +112,12 @@ public class RegisterActivity extends AppCompatActivity {
 
                         if(temp != null) {
                             builder.setMessage("이미 존재하는 이메일 입니다.")
-                                    .setPositiveButton("확인", null)
+                                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            builder.create().dismiss();
+                                        }
+                                    })
                                     .show();
                             return;
                         }
@@ -143,10 +150,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                     }
                 });
-
-
-
-
+                flag = true;
 
             }
 
@@ -163,6 +167,7 @@ public class RegisterActivity extends AppCompatActivity {
                 builder.show();
             }*/
 
+
         });
 
 
@@ -171,6 +176,11 @@ public class RegisterActivity extends AppCompatActivity {
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!flag) {
+                    builder.setMessage("이메일 인증을 해주세요").setPositiveButton("확인", null).show();
+                    return;
+                }
+
                 firebaseUser.reload();
                 boolean a = firebaseUser.isEmailVerified();
                 if(firebaseUser == null) {
@@ -185,7 +195,7 @@ public class RegisterActivity extends AppCompatActivity {
                     builder.show();
                     return;
                 } else {
-                    mDatabaseRef.child(hoseoEmail[0]).setValue(new User(firebaseUser.getUid(), name, pw, studentEmail));
+                    mDatabaseRef.child(hoseoEmail[0]).setValue(new User(hoseoEmail[0], firebaseUser.getUid(), name, pw, studentEmail));
 //                    builder.setMessage();
 //                    builder.setPositiveButton("확인", null);
 //                    builder.show();

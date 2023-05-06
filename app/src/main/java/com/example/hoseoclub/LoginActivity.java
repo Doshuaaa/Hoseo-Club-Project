@@ -144,14 +144,25 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "학교를 선택해주세요", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 String id = idText.getText().toString();
-                databaseReference = database.getReference("User").child(id);
-                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                String pw = pwText.getText().toString();
+                databaseReference = database.getReference("User");
+
+                databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
-
+                            if(dataSnapshot.getKey().toString().equals(id)) {
+                                String pwData = dataSnapshot.child("userPassword").getValue(String.class);
+                                if(pwData.equals(pw)) {
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    break;
+                                }
+                            }
                         }
+                        Toast.makeText(LoginActivity.this,"아이디 또는 비밀번호가 다릅니다.", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -159,8 +170,29 @@ public class LoginActivity extends AppCompatActivity {
 
                     }
                 });
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
+
+//                databaseReference.child(id).addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+//                            String temp = dataSnapshot.getKey();
+//                            String pwData = dataSnapshot.child("userPassword").getValue(String.class);
+//                            if(pw.equals(pwData)) {
+//                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                                startActivity(intent);
+//
+//                            }
+//                            Toast.makeText(LoginActivity.this,"아이디 또는 비밀번호가 다릅니다.", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                    }
+//                });
+
+
             }
         });
     }

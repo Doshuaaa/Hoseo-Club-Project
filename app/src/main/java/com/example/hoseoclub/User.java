@@ -5,15 +5,21 @@ public class User {
     private String userEmail;
     private String userPassword;
     private String userIdToken;
+    private String userId;
 
 
-    public User(String userIdToken, String userName, String userPassword, String email) {
+
+    public User(String userId, String userIdToken, String userName, String userPassword, String email) {
+        this.userId = userId;
         this.userIdToken = userIdToken;
         this.userName = userName;
         this.userPassword = userPassword;
         this.userEmail = email;
     }
 
+    public String getUserId() {
+        return userId;
+    }
     public String getUserIdToken() {
         return userIdToken;
     }

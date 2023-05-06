@@ -48,14 +48,34 @@
                 android:layout_gravity="center"
                 android:textAlignment="center"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/like_filled"
+                    android:text="좋아요"
+                    android:textColor="#D81010"
+                    android:backgroundTint="#F48BD7"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/likeButton"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="회장과 쪽지하기"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp"
+                    android:id="@+id/chatButton"/>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
-
-
-
     </ScrollView>
-
-
 
 </LinearLayout>

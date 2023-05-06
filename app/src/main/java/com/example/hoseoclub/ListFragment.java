@@ -1,6 +1,8 @@
 package com.example.hoseoclub;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,21 +30,23 @@ import java.util.ArrayList;
  * Use the {@link ListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment implements View.OnClickListener{
 
     private RecyclerView clubListRecyclerView;
     private RecyclerView clubInformRecyclerView;
+    private ImageButton likeButton, listSettingButton;
     private RecyclerView.Adapter listAdapter;
     private RecyclerView.Adapter informAdapter;
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
     private String universityName = null;
     private ArrayList<String> clubNameList;
-    private ArrayList<String> clubTypeList;
+    public static ArrayList<String> clubTypeList;
     private ArrayList<ClubInformationList> clubInformationLists;
 
     private ArrayList<ClubCheckBoxViewHolder> clubCheckBoxList;
     private int lastPosition = 0;
+
 
     public static String selectedClubName = "null";
     public static String selectedClubImage = "null";
@@ -55,6 +61,10 @@ public class ListFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private SharedPreferences pref;
+    private SharedPreferences.Editor edit;
+
 
     public ListFragment() {
         // Required empty public constructor
@@ -95,6 +105,8 @@ public class ListFragment extends Fragment {
 
         clubListRecyclerView = inflate.findViewById(R.id.clubListRecyclerView);
         clubInformRecyclerView = inflate.findViewById(R.id.clubInformationRecyclerView);
+        likeButton = inflate.findViewById(R.id.likeClubImageButton);
+        listSettingButton = inflate.findViewById(R.id.listSettingButton);
 
         universityName = ((LoginActivity)LoginActivity.contextLogin).universityName;
 
@@ -226,6 +238,20 @@ public class ListFragment extends Fragment {
 
         // databaseReference.child("Club").child(universityName)
 
+        likeButton.setOnClickListener(this);
         return inflate;
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.likeClubImageButton:
+                Intent intent = new Intent(ListFragment.this.getContext(), LikeClubListActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.listSettingButton:
+
+        }
     }
 }

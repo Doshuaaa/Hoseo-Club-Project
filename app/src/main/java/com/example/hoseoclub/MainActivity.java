@@ -4,28 +4,41 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageButton listImgBtn;
     private ImageButton chatImgBtn;
     private ImageButton seeMoreImgBtn;
+    public  SharedPreferences pref;
+    public  Set<String> likedClubSet;
+    public static Context contextMain;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        contextMain = this;
+
+        likedClubSet = new HashSet<>();
+        pref = getSharedPreferences("LIKE_CLUB_LIST", Context.MODE_PRIVATE);
         listImgBtn = findViewById(R.id.listTabImageButton);
         chatImgBtn = findViewById(R.id.chatTabImageButton);
         seeMoreImgBtn = findViewById(R.id.moreTabImageButton);
 
         listImgBtn.setOnClickListener(this);
         chatImgBtn.setOnClickListener(this);
-        seeMoreImgBtn.setOnClickListener(this::onClick);
+        seeMoreImgBtn.setOnClickListener(this);
     }
 
     @Override

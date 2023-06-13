@@ -2,6 +2,7 @@ package com.example.hoseoclub;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -45,11 +46,16 @@ public class LoginActivity extends AppCompatActivity {
     public static Context contextLogin;
     public String universityName = null;
 
+    private SharedPreferences sharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
+        sharedPreferences = getSharedPreferences("loginId", MODE_PRIVATE);
 
         contextLogin = this;
 
@@ -156,6 +162,7 @@ public class LoginActivity extends AppCompatActivity {
                             if(dataSnapshot.getKey().toString().equals(id)) {
                                 String pwData = dataSnapshot.child("userPassword").getValue(String.class);
                                 if(pwData.equals(pw)) {
+                                    sharedPreferences.edit().putString("loginId", id).commit();
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(intent);
                                     break;

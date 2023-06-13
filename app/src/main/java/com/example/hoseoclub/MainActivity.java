@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton listImgBtn;
     private ImageButton chatImgBtn;
     private ImageButton seeMoreImgBtn;
-    public  SharedPreferences pref;
+    //public  SharedPreferences pref;
     public  Set<String> likedClubSet;
     public static Context contextMain;
 
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         contextMain = this;
 
         likedClubSet = new HashSet<>();
-        pref = getSharedPreferences("LIKE_CLUB_LIST", Context.MODE_PRIVATE);
+        //pref = getSharedPreferences("LIKE_CLUB_LIST", Context.MODE_PRIVATE);
         listImgBtn = findViewById(R.id.listTabImageButton);
         chatImgBtn = findViewById(R.id.chatTabImageButton);
         seeMoreImgBtn = findViewById(R.id.moreTabImageButton);

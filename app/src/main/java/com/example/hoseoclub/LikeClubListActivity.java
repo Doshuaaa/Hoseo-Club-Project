@@ -1,5 +1,6 @@
 package com.example.hoseoclub;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,9 @@ public class LikeClubListActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
     private RecyclerView.Adapter adapter;
+
+    private SharedPreferences pref;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,8 +42,10 @@ public class LikeClubListActivity extends AppCompatActivity {
         ArrayList<String> clubTypeList = ListFragment.clubTypeList;
         ArrayList<ClubInformationList> clubInformationLists = new ArrayList<>();
 
-        Set<String> likedClubSet
-                = ((MainActivity)MainActivity.contextMain).pref.getStringSet("LIKE_CLUB_LIST", new HashSet<>());
+        //pref = getSharedPreferences("LIKE_CLUB_LIST")
+
+       // Set<String> likedClubSet
+         //       = ((MainActivity)MainActivity.contextMain).pref.getStringSet("LIKE_CLUB_LIST", null);
 
         likedClubRecyclerView = findViewById(R.id.likeClubListRecyclerView);
         clubInformationLists.clear();
@@ -53,11 +59,11 @@ public class LikeClubListActivity extends AppCompatActivity {
                             String s = dataSnapshot.child(clubTypeList.get(i)).getKey();
                             for(DataSnapshot dataSnapshot1 : snapshot.child(s).getChildren()) {
                                 String s1 = dataSnapshot1.getKey();
-                                if(likedClubSet.contains(s1)) {
-                                    clubInformationLists.add(new ClubInformationList(dataSnapshot1.getKey()
-                                            , dataSnapshot1.child("image").getValue(String.class)
-                                            , dataSnapshot1.child("text").getValue(String.class)));
-                                }
+//                                if(likedClubSet.contains(s1)) {
+//                                    clubInformationLists.add(new ClubInformationList(dataSnapshot1.getKey()
+//                                            , dataSnapshot1.child("image").getValue(String.class)
+//                                            , dataSnapshot1.child("text").getValue(String.class)));
+//                                }
                             }
                             i++;
                         }

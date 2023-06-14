@@ -143,6 +143,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+
+
                 universityName = universitySpinner.getSelectedItem().toString();
 
 
@@ -156,20 +158,26 @@ public class LoginActivity extends AppCompatActivity {
                 databaseReference = database.getReference("User");
 
                 databaseReference.addValueEventListener(new ValueEventListener() {
+                    boolean isMember = false;
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             if(dataSnapshot.getKey().toString().equals(id)) {
                                 String pwData = dataSnapshot.child("userPassword").getValue(String.class);
-                                if(pwData.equals(pw)) {
+                                if(!pwData.equals(pw)) {
+                                    Toast.makeText(LoginActivity.this,"아이디 또는 비밀번호가 다릅니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                } else {
                                     sharedPreferences.edit().putString("loginId", id).commit();
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    startActivity(intent);
+                                    isMember = true;
                                     break;
                                 }
                             }
                         }
-                        Toast.makeText(LoginActivity.this,"아이디 또는 비밀번호가 다릅니다.", Toast.LENGTH_SHORT).show();
+                        if(isMember) {
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
                     }
 
                     @Override

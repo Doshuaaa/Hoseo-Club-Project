@@ -1,10 +1,12 @@
 package com.example.hoseoclub;
 
 public class Club {
-
     private String text;
     private String image;
 
+    public Club() {
+
+    }
     public String getText() {
         return text;
     }

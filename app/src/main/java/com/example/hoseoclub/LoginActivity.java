@@ -46,8 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     public static Context contextLogin;
     public String universityName = null;
 
-    private SharedPreferences sharedPreferences;
-
+    private String loginId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
 
-        sharedPreferences = getSharedPreferences("loginId", MODE_PRIVATE);
+
 
         contextLogin = this;
 
@@ -168,14 +167,16 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.makeText(LoginActivity.this,"아이디 또는 비밀번호가 다릅니다.", Toast.LENGTH_SHORT).show();
                                     break;
                                 } else {
-                                    sharedPreferences.edit().putString("loginId", id).commit();
+                                    loginId = id;
                                     isMember = true;
                                     break;
                                 }
                             }
                         }
                         if(isMember) {
+                            databaseReference.removeEventListener(this);
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.putExtra("loginId", loginId);
                             startActivity(intent);
                         }
                     }

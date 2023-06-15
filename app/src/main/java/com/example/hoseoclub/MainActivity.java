@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton chatImgBtn;
     private ImageButton seeMoreImgBtn;
     public static Context contextMain;
+    public String loginId;
 
 
     @Override
@@ -27,6 +29,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         contextMain = this;
+
+        Intent intent = getIntent();
+        loginId = intent.getStringExtra("loginId");
 
         listImgBtn = findViewById(R.id.listTabImageButton);
         chatImgBtn = findViewById(R.id.chatTabImageButton);

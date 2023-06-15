@@ -66,6 +66,16 @@
                 <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/baseline_heart_broken_24"
+                    android:text="좋아요 해제하기"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/likeCancelButton"
+                    android:visibility="gone"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="회장과 쪽지하기"
                     android:layout_weight="1"
                     android:layout_marginRight="5dp"

@@ -52,6 +52,7 @@ public class IntroduceClubActivity extends AppCompatActivity {
 
         ImageButton backButton = findViewById(R.id.backImageButton);
         Button likeClubButton = findViewById(R.id.likeButton);
+        Button likeCancelButton = findViewById(R.id.likeCancelButton);
         Button chatButton = findViewById(R.id.chatButton);
         ImageView clubImage = findViewById(R.id.clubImageView);
         TextView clubNameText = findViewById(R.id.clubNameTextView);
@@ -70,6 +71,7 @@ public class IntroduceClubActivity extends AppCompatActivity {
         databaseReference = database.getReference("User").child(id).child("likedClub");
 
 
+
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -77,6 +79,12 @@ public class IntroduceClubActivity extends AppCompatActivity {
                     map.put(snapshot1.getKey(), snapshot1.getValue());
                    // i = Integer.parseInt(snapshot1.getKey()) + 1;
                 }
+                if(map.containsKey(selectedClubName)) {
+                    likeClubButton.setVisibility(View.GONE);
+                    likeCancelButton.setVisibility(View.VISIBLE);
+                }
+
+                databaseReference.removeEventListener(this);
             }
 
             @Override
@@ -98,12 +106,27 @@ public class IntroduceClubActivity extends AppCompatActivity {
                 }
                 else {
                     //map.put(String.valueOf(i), clubName);
-                    map.put(selectedClubType, selectedClubName);
+                    map.put(selectedClubName, selectedClubType);
+                    likeClubButton.setVisibility(View.GONE);
+                    likeCancelButton.setVisibility(View.VISIBLE);
                     //likedClubSet.add(clubName);
                     //((MainActivity)MainActivity.contextMain).pref.edit().putStringSet("LIKE_CLUB_LIST", likedClubSet).apply();
-                    Toast.makeText(IntroduceClubActivity.this, "관심있는 동아리에 추가되었습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(IntroduceClubActivity.this, "관심있는 동아리에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                    databaseReference.updateChildren(map);
                     //i++;
                 }
+            }
+        });
+
+        //이부분 부터
+        likeCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databaseReference.child(selectedClubName).removeValue();
+                map.remove(selectedClubName);
+                likeClubButton.setVisibility(View.VISIBLE);
+                likeCancelButton.setVisibility(View.GONE);
+                Toast.makeText(IntroduceClubActivity.this, "관심있는 동아리에서 삭제되었습니다", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -113,11 +136,6 @@ public class IntroduceClubActivity extends AppCompatActivity {
                 finish();
             }
         });
-    }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        databaseReference.updateChildren(map);
     }
 
 }

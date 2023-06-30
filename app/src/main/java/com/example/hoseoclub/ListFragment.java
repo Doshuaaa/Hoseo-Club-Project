@@ -167,6 +167,7 @@ public class ListFragment extends Fragment implements View.OnClickListener{
                                                     String name = null;
                                                     String text = null;
                                                     String image = null;
+                                                    String leader = null;
                                                     String clubType = buttonView.getText().toString();
                                                     for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                                         name = dataSnapshot.getKey();

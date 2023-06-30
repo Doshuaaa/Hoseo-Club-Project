@@ -3,10 +3,13 @@ package com.example.hoseoclub;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +62,28 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_message, container, false);
+        View inflate = inflater.inflate(R.layout.fragment_message, container, false);
+
+        String loginID = ((MainActivity)MainActivity.contextMain).loginId;
+
+
+        ImageButton chatListBackButton = inflate.findViewById(R.id.chatListBackButton);
+        RecyclerView chatListRecyclerView = inflate.findViewById(R.id.chatListRecyclerView);
+
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatFragment.this.getContext());
+//        linearLayoutManager.setReverseLayout(true);
+//        linearLayoutManager.setStackFromEnd(true);
+        chatListRecyclerView.setLayoutManager(linearLayoutManager);
+        RecyclerView.Adapter<ChatAdapter.RecentChatViewHolder> adapter = new ChatAdapter(loginID);
+        chatListRecyclerView.setAdapter(adapter);
+
+
+//        Intent intent = new Intent(ChatFragment.this.getContext(), ChatActivity.class);
+//        intent.putExtra("수신자", "");
+//        startActivity(intent);
+
+
+        return inflate;
     }
 }

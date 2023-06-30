@@ -165,10 +165,11 @@ public class LoginActivity extends AppCompatActivity {
                                 String pwData = dataSnapshot.child("userPassword").getValue(String.class);
                                 if(!pwData.equals(pw)) {
                                     Toast.makeText(LoginActivity.this,"아이디 또는 비밀번호가 다릅니다.", Toast.LENGTH_SHORT).show();
-                                    break;
+                                    databaseReference.removeEventListener(this);
                                 } else {
                                     loginId = id;
                                     isMember = true;
+                                    databaseReference.removeEventListener(this);
                                     break;
                                 }
                             }

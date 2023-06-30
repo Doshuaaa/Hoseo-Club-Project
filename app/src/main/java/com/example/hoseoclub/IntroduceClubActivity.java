@@ -31,12 +31,12 @@ public class IntroduceClubActivity extends AppCompatActivity {
     String selectedClubText;
     String selectedClubType;
 
-    private DatabaseReference databaseReference;
+    private DatabaseReference userDatabaseReference, clubDatabaseReference;
 
     HashMap map;
-    int i = 1;
-    //private Set<String> likedClubSet;
 
+    String leader;
+    //private Set<String> likedClubSet;
 
 
     @Override
@@ -65,14 +65,15 @@ public class IntroduceClubActivity extends AppCompatActivity {
         Glide.with(this).load(selectedClubImage).into(clubImage);
         clubIntroduceText.setText(selectedClubText);
 
-        String id = getSharedPreferences("loginId", MODE_PRIVATE).getString("loginId", null);
+        String id = ((MainActivity)MainActivity.contextMain).loginId;
+
 
         map = new HashMap<String, String>();
-        databaseReference = database.getReference("User").child(id).child("likedClub");
+        userDatabaseReference = database.getReference("User").child(id).child("likedClub");
+        clubDatabaseReference = database.getReference("Club").child(((LoginActivity)LoginActivity.contextLogin).universityName).child(selectedClubType).child(selectedClubName);
 
 
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        userDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot snapshot1 : snapshot.getChildren()) {
@@ -84,7 +85,21 @@ public class IntroduceClubActivity extends AppCompatActivity {
                     likeCancelButton.setVisibility(View.VISIBLE);
                 }
 
-                databaseReference.removeEventListener(this);
+                userDatabaseReference.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        clubDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                leader = snapshot.child("leader").getValue(String.class);
+
+                clubDatabaseReference.removeEventListener(this);
             }
 
             @Override
@@ -100,7 +115,7 @@ public class IntroduceClubActivity extends AppCompatActivity {
 
                 if( map.size() >= 10 ) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(IntroduceClubActivity.this);
-                    builder.setMessage("동아리 좋아요 표시는 10개까지 가능합니다.");
+                    builder.setMessage("동아리 좋아요 표시는 10개까지 가능합니다");
                     builder.setPositiveButton("확인", null);
                     builder.show();
                 }
@@ -112,7 +127,7 @@ public class IntroduceClubActivity extends AppCompatActivity {
                     //likedClubSet.add(clubName);
                     //((MainActivity)MainActivity.contextMain).pref.edit().putStringSet("LIKE_CLUB_LIST", likedClubSet).apply();
                     Toast.makeText(IntroduceClubActivity.this, "관심있는 동아리에 추가되었습니다", Toast.LENGTH_SHORT).show();
-                    databaseReference.updateChildren(map);
+                    userDatabaseReference.updateChildren(map);
                     //i++;
                 }
             }
@@ -122,7 +137,7 @@ public class IntroduceClubActivity extends AppCompatActivity {
         likeCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                databaseReference.child(selectedClubName).removeValue();
+                userDatabaseReference.child(selectedClubName).removeValue();
                 map.remove(selectedClubName);
                 likeClubButton.setVisibility(View.VISIBLE);
                 likeCancelButton.setVisibility(View.GONE);
@@ -136,6 +151,18 @@ public class IntroduceClubActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        chatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(IntroduceClubActivity.this, SendChatActivity.class);
+                intent.putExtra("receiverID", leader);
+                intent.putExtra("receiverName", selectedClubName);
+                startActivity(intent);
+            }
+        });
+
     }
+
 
 }

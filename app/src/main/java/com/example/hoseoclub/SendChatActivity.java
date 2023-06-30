@@ -45,9 +45,9 @@ public class SendChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String content = chatEditText.getText().toString();
                 Object time = ServerValue.TIMESTAMP;
-                MessageItem item = new MessageItem(content, time, 0);
+                MessageItem item = new MessageItem(content, (long) time, 0);
                 senderReference.push().setValue(item);
-                item = new MessageItem(content, time, 1);
+                item = new MessageItem(content,(long) time, 1);
                 receiverReference.push().setValue(item);
                 finish();
             }

@@ -102,6 +102,10 @@ public class ChatAdapter extends RecyclerView.Adapter <ChatAdapter.RecentChatVie
     public void onBindViewHolder(@NonNull ChatAdapter.RecentChatViewHolder holder, int position) {
         RecentChatViewHolder viewHolder = (RecentChatViewHolder) holder;
 
+
+
+        Collections.sort(recentChatList, new MessageTimeComparator());
+
         MessageItem messageItem = recentChatList.get(position);
 
         Date date = new Date((Long) messageItem.time);

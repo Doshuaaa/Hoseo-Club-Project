@@ -7,13 +7,13 @@ public class MessageItem {
 
     String receiver;
     String message;
-    Object time;
+    long time;
 
     String interlocutor;
 
     int flag;
 
-    public MessageItem(String message, Object time, int flag) {
+    public MessageItem(String message, Long time, int flag) {
 
         // send message = 0, receive message = 1
         this.message = message;
@@ -22,7 +22,7 @@ public class MessageItem {
     }
 
 
-    public MessageItem(String interlocutor, String message, Object time, int flag) {
+    public MessageItem(String interlocutor, String message, long time, int flag) {
         this.interlocutor = interlocutor;
         this.message = message;
         this.time = time;
@@ -50,11 +50,11 @@ public class MessageItem {
         this.message = message;
     }
 
-    public Object getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         this.time = time;
     }
 
@@ -81,11 +81,16 @@ class MessageTimeComparator implements  Comparator<MessageItem> {
     @Override
     public int compare(MessageItem o1, MessageItem o2) {
 
-        if( (int) o1.time < (int) o2.time) {
+        Long a = o1.time;
+        Long b = o2.time;
+        int a1 = a.intValue();
+        int b1 = b.intValue();
+        if( a1 < b1) {
+
             return 1;
         }
 
-        else if( (int) o1.time > (int) o2.time) {
+        else if( a1 > b1) {
             return -1;
         }
         else{

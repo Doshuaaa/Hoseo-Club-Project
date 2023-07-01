@@ -108,7 +108,7 @@ public class ChatAdapter extends RecyclerView.Adapter <ChatAdapter.RecentChatVie
 
         MessageItem messageItem = recentChatList.get(position);
 
-        Date date = new Date((Long) messageItem.time);
+        Date date = new Date((Long) messageItem.longTime);
 
         String stringTime = simpleDateFormat.format(date);
 

@@ -1,21 +1,24 @@
 package com.example.hoseoclub;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 public class MessageItem {
 
     String receiver;
     String message;
-    long time;
+
+
+
+    Object time;
+    long longTime;
 
     String interlocutor;
 
     int flag;
 
-    public MessageItem(String message, Long time, int flag) {
 
-        // send message = 0, receive message = 1
+
+    public MessageItem(String message, Object time, int flag) {
         this.message = message;
         this.time = time;
         this.flag = flag;
@@ -25,7 +28,7 @@ public class MessageItem {
     public MessageItem(String interlocutor, String message, long time, int flag) {
         this.interlocutor = interlocutor;
         this.message = message;
-        this.time = time;
+        this.longTime = time;
         this.flag = flag;
     }
 
@@ -50,12 +53,12 @@ public class MessageItem {
         this.message = message;
     }
 
-    public long getTime() {
-        return time;
+    public long getLongTime() {
+        return longTime;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setLongTime(long longTime) {
+        this.longTime = longTime;
     }
 
 
@@ -75,14 +78,22 @@ public class MessageItem {
         this.flag = flag;
     }
 
+    public Object getTime() {
+        return time;
+    }
+
+    public void setTime(Object time) {
+        this.time = time;
+    }
+
 }
 
 class MessageTimeComparator implements  Comparator<MessageItem> {
     @Override
     public int compare(MessageItem o1, MessageItem o2) {
 
-        Long a = o1.time;
-        Long b = o2.time;
+        Long a = o1.longTime;
+        Long b = o2.longTime;
         int a1 = a.intValue();
         int b1 = b.intValue();
         if( a1 < b1) {

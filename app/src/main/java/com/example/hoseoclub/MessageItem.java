@@ -24,6 +24,13 @@ public class MessageItem {
         this.flag = flag;
     }
 
+    public MessageItem(String message, long time, int flag) {
+        this.message = message;
+        longTime = time;
+        this.flag = flag;
+    }
+
+
 
     public MessageItem(String interlocutor, String message, long time, int flag) {
         this.interlocutor = interlocutor;

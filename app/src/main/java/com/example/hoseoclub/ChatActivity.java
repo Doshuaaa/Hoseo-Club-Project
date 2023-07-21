@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ChatActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

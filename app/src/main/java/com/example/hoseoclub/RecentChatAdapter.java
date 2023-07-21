@@ -4,10 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +27,46 @@ import java.util.TimeZone;
 
 public class RecentChatAdapter extends RecyclerView.Adapter <RecentChatAdapter.RecentChatViewHolder> {
 
+
+    ArrayList<String> checkedIdList;
+    public void deleteCheckedChat() throws InterruptedException {
+
+        checkedIdList.clear();
+
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+
+            }
+        });
+
+        notifyDataSetChanged();
+        thread.start();
+
+        thread.join();
+
+        for (String checkedId : checkedIdList) {
+                    reference.child(checkedId).removeValue();
+                }
+
+//
+//        while(true) {
+//            if(!thread.isAlive()) {
+//                for (String checkedId : checkedIdList) {
+//                    reference.child(checkedId).removeValue();
+//                }
+//                break;
+//            }
+//        }
+
+
+    }
+
+
+    public boolean isCheckBoxVisible = false;
+
     String loginID;
     FirebaseDatabase database;
     DatabaseReference reference;
@@ -34,13 +77,18 @@ public class RecentChatAdapter extends RecyclerView.Adapter <RecentChatAdapter.R
 
     Context context;
 
+    private ChatFragment chatFragment;
+
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 
 
-    public RecentChatAdapter(Context context, String loginID) {
+    public RecentChatAdapter(Fragment fragment, Context context, String loginID) {
+
+        checkedIdList = new ArrayList<>();
 
         this.context = context;
 
+        chatFragment = (ChatFragment) fragment;
 
         database = FirebaseDatabase.getInstance();
         reference = database.getReference().child("User").child(loginID).child("Chat");
@@ -87,7 +135,6 @@ public class RecentChatAdapter extends RecyclerView.Adapter <RecentChatAdapter.R
                 }
                 Collections.sort(chatList, new MessageTimeComparator());
 
-
             }
 
             @Override
@@ -96,10 +143,10 @@ public class RecentChatAdapter extends RecyclerView.Adapter <RecentChatAdapter.R
             }
         });
     }
-
     @NonNull
     @Override
     public RecentChatAdapter.RecentChatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         View v = View.inflate(parent.getContext(), R.layout.viewholder_recentchat, null);
         RecentChatAdapter.RecentChatViewHolder viewHolder = new RecentChatViewHolder(v);
         return viewHolder;
@@ -107,7 +154,9 @@ public class RecentChatAdapter extends RecyclerView.Adapter <RecentChatAdapter.R
 
     @Override
     public void onBindViewHolder(@NonNull RecentChatAdapter.RecentChatViewHolder holder, int position) {
+
         RecentChatViewHolder viewHolder = (RecentChatViewHolder) holder;
+
 
 
         Collections.sort(recentChatList, new MessageTimeComparator());
@@ -120,12 +169,34 @@ public class RecentChatAdapter extends RecyclerView.Adapter <RecentChatAdapter.R
 
         viewHolder.initRecentChat(messageItem.interlocutor, messageItem.message, stringTime);
 
+        if(isCheckBoxVisible) {
+            viewHolder.chatCheckBox.setVisibility(View.VISIBLE);
+
+        }
+
+//        for(int i = 0; i < position; i++) {
+//            viewHolder.get
+//        }
+
+        if(viewHolder.chatCheckBox.isChecked()) {
+            checkedIdList.add(viewHolder.interlocutorTextView.getText().toString());
+        }
+
         viewHolder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra("interlocutor", recentChatList.get(position).interlocutor);
-                context.startActivity(intent);
+                if(isCheckBoxVisible) {
+                    if(viewHolder.chatCheckBox.isChecked()) {
+                        viewHolder.chatCheckBox.setChecked(false);
+                    } else {
+                        viewHolder.chatCheckBox.setChecked(true);
+                    }
+                }
+                else {
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    intent.putExtra("interlocutor", recentChatList.get(position).interlocutor);
+                    context.startActivity(intent);
+                }
             }
         });
 
@@ -145,6 +216,9 @@ public class RecentChatAdapter extends RecyclerView.Adapter <RecentChatAdapter.R
 
         public RelativeLayout relativeLayout;
 
+        private final CheckBox chatCheckBox;
+
+
         public RecentChatViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -152,8 +226,30 @@ public class RecentChatAdapter extends RecyclerView.Adapter <RecentChatAdapter.R
             chatContentTextView = itemView.findViewById(R.id.chatContentTextView);
             dateTextView = itemView.findViewById(R.id.dateTextView);
             relativeLayout = itemView.findViewById(R.id.recentChatRelativeLayout);
-        }
+            chatCheckBox = itemView.findViewById(R.id.selectedCheck);
 
+
+            relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+
+                    isCheckBoxVisible = true;
+                    chatCheckBox.setChecked(true);
+                    chatFragment.setDeleteChatCheckBoxVisible(isCheckBoxVisible);
+                    notifyDataSetChanged();
+                    return false;
+                }
+            });
+
+            chatCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                }
+            });
+
+
+        }
 
         public void initRecentChat(String interlocutor, String chatContentText, String dateText) {
             interlocutorTextView.setText(interlocutor);

@@ -61,4 +61,5 @@ public class SeeMoreFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_see_more, container, false);
     }
+
 }
